@@ -5,14 +5,14 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TITFood_Backend.Interfaces;
 using TITFood_Backend.Models;
-using TITFood_Backend.Entities; // For OrderStatus
-using TITFood_Backend.Common; // For AppRole
+using TITFood_Backend.Entities; 
+using TITFood_Backend.Common; 
 
 namespace TITFood_Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] // Yêu cầu xác thực cho tất cả các action trong controller này
+    [Authorize] 
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -37,7 +37,6 @@ namespace TITFood_Backend.Controllers
             {
                 var createdOrder = await _orderService.CreateOrderAsync(createOrderDto, userId);
                 if (createdOrder == null) return BadRequest("Không thể tạo đơn hàng.");
-                // Trả về thông tin chi tiết của đơn hàng vừa tạo
                 var detailedOrder = await _orderService.GetOrderByIdAsync(createdOrder.Id, userId);
                 return CreatedAtAction(nameof(GetOrderById), new { orderId = detailedOrder!.Id }, detailedOrder);
             }
@@ -78,7 +77,7 @@ namespace TITFood_Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = AppRole.Admin)] // Chỉ Admin mới xem được tất cả đơn hàng
+        [Authorize(Roles = AppRole.Admin)] 
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
@@ -86,15 +85,18 @@ namespace TITFood_Backend.Controllers
         }
 
         [HttpPut("{orderId}/status")]
-        [Authorize(Roles = AppRole.Admin + "," + AppRole.RestaurantOwner)] // Admin hoặc chủ nhà hàng có thể cập nhật trạng thái
+        [Authorize(Roles = AppRole.Admin + "," + AppRole.Customer)] // Admin or Customer (for cancellation)
         public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromBody] UpdateOrderStatusDto statusDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
+            
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(currentUserId)) return Unauthorized();
 
-            // Thêm logic kiểm tra quyền của RestaurantOwner nếu cần (ví dụ: chỉ được update đơn của nhà hàng mình)
-            var success = await _orderService.UpdateOrderStatusAsync(orderId, statusDto.Status);
-            if (!success) return NotFound("Không tìm thấy đơn hàng hoặc cập nhật thất bại.");
-            return NoContent();
+
+            var success = await _orderService.UpdateOrderStatusAsync(orderId, statusDto.Status, currentUserId);
+            if (!success) return Forbid("Không thể cập nhật trạng thái đơn hàng hoặc không tìm thấy đơn hàng.");
+            return Ok(new { Message = "Trạng thái đơn hàng đã được cập nhật."});
         }
     }
 }

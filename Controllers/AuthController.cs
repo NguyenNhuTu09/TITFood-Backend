@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TITFood_Backend.Interfaces;
 using TITFood_Backend.Models;
-using TITFood_Backend.Common; // For AppRole class
+using TITFood_Backend.Common; 
 
 namespace TITFood_Backend.Controllers
 {
@@ -23,10 +23,9 @@ namespace TITFood_Backend.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var (result, user) = await _authService.RegisterAsync(model, AppRole.Customer); // Mặc định đăng ký là Customer
+            var (result, user) = await _authService.RegisterAsync(model, AppRole.Customer); 
             if (result.Succeeded && user != null)
             {
-                // Có thể trả về thông tin user hoặc chỉ là success message
                 return Ok(new { Message = "Đăng ký thành công!", UserId = user.Id });
             }
 
@@ -37,9 +36,10 @@ namespace TITFood_Backend.Controllers
             return BadRequest(ModelState);
         }
         
-        [HttpPost("register-admin")] // Endpoint riêng cho admin (cần bảo vệ)
+        [HttpPost("register-admin")] 
         public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
         {
+            // In a real app, this endpoint should be protected (e.g., by an existing admin or a secret key)
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 

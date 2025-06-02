@@ -21,15 +21,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false; // Có thể set true nếu muốn ký tự đặc biệt
+    options.Password.RequireNonAlphanumeric = false; 
     options.Password.RequiredLength = 6;
     options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedAccount = false; // Set true nếu muốn xác thực email
+    options.SignIn.RequireConfirmedAccount = false; 
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// 3. Cấu hình JWT Authentication
 var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
 if (jwtSettings == null || string.IsNullOrEmpty(jwtSettings.Key)) {
     throw new InvalidOperationException("JWT Key is not configured in appsettings.json. Please provide a strong secret key.");
@@ -45,7 +44,7 @@ builder.Services.AddAuthentication(options =>
 .AddJwtBearer(options =>
 {
     options.SaveToken = true;
-    options.RequireHttpsMetadata = false; // Chỉ false cho môi trường dev
+    options.RequireHttpsMetadata = false; 
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
@@ -55,13 +54,17 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero // Không cho phép chênh lệch thời gian
+        ClockSkew = TimeSpan.Zero 
     };
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<ICartService, CartService>();
+
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 
@@ -97,6 +100,7 @@ builder.Services.AddSwaggerGen(opt =>
 });
 
 
+// 8. Cấu hình CORS 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -115,14 +119,18 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    
+    // using (var scope = app.Services.CreateScope())
+    // {
+    //     var services = scope.ServiceProvider;
+    //     SeedData.Initialize(services).Wait(); // Tạo class SeedData nếu cần
+    // }
 }
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll"); // Sử dụng chính sách CORS đã định nghĩa
+app.UseCors("AllowAll"); 
 
-app.UseAuthentication(); // Quan trọng: Phải đứng trước UseAuthorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 
 app.MapControllers();

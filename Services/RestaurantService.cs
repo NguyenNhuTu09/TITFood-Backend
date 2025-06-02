@@ -21,7 +21,6 @@ namespace TITFood_Backend.Services
             _mapper = mapper;
         }
 
-        // Restaurant methods
         public async Task<RestaurantDto?> CreateAsync(CreateRestaurantDto createDto)
         {
             var restaurant = _mapper.Map<Restaurant>(createDto);
@@ -40,12 +39,18 @@ namespace TITFood_Backend.Services
             return true;
         }
 
-        public async Task<IEnumerable<RestaurantDto>> GetAllAsync()
+        public async Task<IEnumerable<RestaurantDto>> GetAllAsync(string? searchTerm)
         {
-            var restaurants = await _context.Restaurants
-                                        .Include(r => r.Menus)
-                                        .ThenInclude(m => m.Dishes)
-                                        .ToListAsync();
+            var query = _context.Restaurants
+                                .Include(r => r.Menus)
+                                .ThenInclude(m => m.Dishes)
+                                .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(r => r.Name.Contains(searchTerm) || (r.Description != null && r.Description.Contains(searchTerm)));
+            }
+
+            var restaurants = await query.ToListAsync();
             return _mapper.Map<IEnumerable<RestaurantDto>>(restaurants);
         }
 
@@ -54,7 +59,22 @@ namespace TITFood_Backend.Services
             var restaurant = await _context.Restaurants
                                         .Include(r => r.Menus)
                                         .ThenInclude(m => m.Dishes)
+                                        .Include(r => r.Reviews) // Eager load reviews
+                                            .ThenInclude(rev => rev.User) // And user of review
                                         .FirstOrDefaultAsync(r => r.Id == id);
+            if (restaurant != null)
+            {
+                // Calculate average rating if there are reviews
+                if (restaurant.Reviews.Any())
+                {
+                    restaurant.Rating = restaurant.Reviews.Average(r => r.Rating);
+                }
+                else
+                {
+                    restaurant.Rating = 0; // Default if no reviews
+                }
+                // No need to save changes here as it's just for display
+            }
             return _mapper.Map<RestaurantDto>(restaurant);
         }
 
@@ -69,11 +89,10 @@ namespace TITFood_Backend.Services
             return true;
         }
 
-        // Menu methods
         public async Task<MenuDto?> CreateMenuAsync(CreateMenuDto createMenuDto)
         {
             var restaurantExists = await _context.Restaurants.AnyAsync(r => r.Id == createMenuDto.RestaurantId);
-            if (!restaurantExists) return null; // Hoặc throw exception
+            if (!restaurantExists) return null; 
 
             var menu = _mapper.Map<Menu>(createMenuDto);
             _context.Menus.Add(menu);
@@ -114,7 +133,7 @@ namespace TITFood_Backend.Services
             if (menu == null) return false;
 
              var restaurantExists = await _context.Restaurants.AnyAsync(r => r.Id == updateMenuDto.RestaurantId);
-            if (!restaurantExists) return false; // Nhà hàng phải tồn tại
+            if (!restaurantExists) return false; 
 
             _mapper.Map(updateMenuDto, menu);
             _context.Menus.Update(menu);
@@ -122,12 +141,10 @@ namespace TITFood_Backend.Services
             return true;
         }
 
-
-        // Dish methods
         public async Task<DishDto?> CreateDishAsync(CreateDishDto createDishDto)
         {
             var menuExists = await _context.Menus.AnyAsync(m => m.Id == createDishDto.MenuId);
-            if (!menuExists) return null; // Hoặc throw exception
+            if (!menuExists) return null; 
 
             var dish = _mapper.Map<Dish>(createDishDto);
             _context.Dishes.Add(dish);
@@ -165,7 +182,7 @@ namespace TITFood_Backend.Services
             if (dish == null) return false;
 
             var menuExists = await _context.Menus.AnyAsync(m => m.Id == updateDishDto.MenuId);
-            if (!menuExists) return false; // Menu phải tồn tại
+            if (!menuExists) return false; 
 
             _mapper.Map(updateDishDto, dish);
             _context.Dishes.Update(dish);

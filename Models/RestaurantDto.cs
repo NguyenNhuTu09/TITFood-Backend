@@ -29,6 +29,5 @@ namespace TITFood_Backend.Models
 
     public class UpdateRestaurantDto : CreateRestaurantDto
     {
-        
     }
 }

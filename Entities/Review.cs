@@ -17,10 +17,6 @@ namespace TITFood_Backend.Entities
         [ForeignKey("RestaurantId")]
         public virtual Restaurant? Restaurant { get; set; }
 
-        // public int? DishId { get; set; } // Optional: Review cho món ăn cụ thể
-        // [ForeignKey("DishId")]
-        // public virtual Dish Dish { get; set; }
-
         [Required]
         [Range(1, 5)]
         public int Rating { get; set; } // 1 đến 5 sao

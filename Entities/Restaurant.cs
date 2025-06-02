@@ -20,5 +20,6 @@ namespace TITFood_Backend.Entities
 
         public virtual ICollection<Menu> Menus { get; set; } = new List<Menu>();
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

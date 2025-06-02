@@ -24,7 +24,7 @@ namespace TITFood_Backend.Entities
         [ForeignKey("UserId")]
         public virtual ApplicationUser? User { get; set; }
 
-        public int RestaurantId { get; set; } // Để biết đơn hàng thuộc nhà hàng nào
+        public int RestaurantId { get; set; } 
         [ForeignKey("RestaurantId")]
         public virtual Restaurant? Restaurant { get; set; }
 
@@ -35,7 +35,7 @@ namespace TITFood_Backend.Entities
 
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
         public string? ShippingAddress { get; set; }
-        public string? Notes { get; set; } // Ghi chú từ khách hàng
+        public string? Notes { get; set; } 
 
         public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }

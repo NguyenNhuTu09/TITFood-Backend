@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TITFood_Backend.Interfaces;
 using TITFood_Backend.Models;
-using TITFood_Backend.Common; // For AppRole
+using TITFood_Backend.Common; 
 
 namespace TITFood_Backend.Controllers
 {
@@ -20,9 +20,9 @@ namespace TITFood_Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAllRestaurants()
+        public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAllRestaurants([FromQuery] string? searchTerm)
         {
-            var restaurants = await _restaurantService.GetAllAsync();
+            var restaurants = await _restaurantService.GetAllAsync(searchTerm);
             return Ok(restaurants);
         }
 
@@ -35,17 +35,17 @@ namespace TITFood_Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = AppRole.Admin)] // Chỉ Admin mới được tạo nhà hàng
+        [Authorize(Roles = AppRole.Admin)] 
         public async Task<ActionResult<RestaurantDto>> CreateRestaurant([FromBody] CreateRestaurantDto createDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var createdRestaurant = await _restaurantService.CreateAsync(createDto);
-            if (createdRestaurant == null) return BadRequest("Không thể tạo nhà hàng."); // Hoặc lỗi cụ thể hơn
+            if (createdRestaurant == null) return BadRequest("Không thể tạo nhà hàng."); 
             return CreatedAtAction(nameof(GetRestaurantById), new { id = createdRestaurant.Id }, createdRestaurant);
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = AppRole.Admin)] // Chỉ Admin mới được cập nhật
+        [Authorize(Roles = AppRole.Admin)] 
         public async Task<IActionResult> UpdateRestaurant(int id, [FromBody] UpdateRestaurantDto updateDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -55,7 +55,7 @@ namespace TITFood_Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = AppRole.Admin)] // Chỉ Admin mới được xóa
+        [Authorize(Roles = AppRole.Admin)] 
         public async Task<IActionResult> DeleteRestaurant(int id)
         {
             var success = await _restaurantService.DeleteAsync(id);
@@ -109,7 +109,7 @@ namespace TITFood_Backend.Controllers
             return NoContent();
         }
 
-        // Dish Endpoints (trong RestaurantController hoặc DishController riêng)
+        // Dish Endpoints 
         [HttpGet("menus/{menuId}/dishes")]
         public async Task<ActionResult<IEnumerable<DishDto>>> GetDishesForMenu(int menuId)
         {

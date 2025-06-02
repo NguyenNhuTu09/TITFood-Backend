@@ -19,22 +19,22 @@ namespace TITFood_Backend.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context; // For creating cart
 
         public AuthService(UserManager<ApplicationUser> userManager,
-                           SignInManager<ApplicationUser> signInManager,
                            RoleManager<IdentityRole> roleManager,
                            IConfiguration configuration,
-                           IMapper mapper)
+                           IMapper mapper,
+                           ApplicationDbContext context)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _roleManager = roleManager;
             _configuration = configuration;
             _mapper = mapper;
+            _context = context;
         }
 
         public async Task<(IdentityResult, ApplicationUser?)> RegisterAsync(RegisterModel model, string roleName)
@@ -52,7 +52,7 @@ namespace TITFood_Backend.Services
             }
 
             var user = _mapper.Map<ApplicationUser>(model);
-            user.SecurityStamp = Guid.NewGuid().ToString(); // Cần thiết cho một số tính năng Identity
+            user.SecurityStamp = Guid.NewGuid().ToString(); 
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -63,6 +63,12 @@ namespace TITFood_Backend.Services
                     await _roleManager.CreateAsync(new IdentityRole(roleName));
                 }
                 await _userManager.AddToRoleAsync(user, roleName);
+
+                // Create an empty cart for the new user
+                var cart = new Cart { UserId = user.Id };
+                _context.Carts.Add(cart);
+                await _context.SaveChangesAsync(); // Save cart after user creation
+
                 return (result, user);
             }
             return (result, null);
@@ -71,12 +77,10 @@ namespace TITFood_Backend.Services
         public async Task<AuthResponseDto?> LoginAsync(LoginModel model)
         {
             ApplicationUser? user = null;
-            // Thử tìm user bằng username trước
             if (!string.IsNullOrEmpty(model.LoginIdentifier))
             {
                 user = await _userManager.FindByNameAsync(model.LoginIdentifier);
             }
-            // Nếu không tìm thấy bằng username, thử tìm bằng email
             if (user == null && !string.IsNullOrEmpty(model.LoginIdentifier) && model.LoginIdentifier.Contains("@"))
             {
                 user = await _userManager.FindByEmailAsync(model.LoginIdentifier);
@@ -89,9 +93,9 @@ namespace TITFood_Backend.Services
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? string.Empty), // Subject
+                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName ?? string.Empty), 
                     new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // JWT ID
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
                 };
 
                 foreach (var userRole in userRoles)
@@ -124,16 +128,7 @@ namespace TITFood_Backend.Services
                     Roles = userRoles
                 };
             }
-            return null; // Đăng nhập thất bại
-        }
-         public async Task<UserDto?> GetUserByIdAsync(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return null;
-
-            var userDto = _mapper.Map<UserDto>(user);
-            userDto.Roles = await _userManager.GetRolesAsync(user);
-            return userDto;
+            return null; 
         }
     }
 }
