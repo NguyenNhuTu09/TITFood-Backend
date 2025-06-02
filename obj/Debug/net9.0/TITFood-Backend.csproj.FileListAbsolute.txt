@@ -96,3 +96,11 @@ C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\refint\TITFood-Backend.dll
 C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\TITFood-Backend.pdb
 C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\TITFood-Backend.genruntimeconfig.cache
 C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\ref\TITFood-Backend.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\DnsClient.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\MongoDB.Bson.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\MongoDB.Driver.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\SharpCompress.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\Snappier.dll
+C:\Users\ADMIN\TITFood-Backend\bin\Debug\net9.0\ZstdSharp.dll
+C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\TITFood-Backend.csproj.AssemblyReference.cache
+C:\Users\ADMIN\TITFood-Backend\obj\Debug\net9.0\TITFood-.6DCF180F.Up2Date
