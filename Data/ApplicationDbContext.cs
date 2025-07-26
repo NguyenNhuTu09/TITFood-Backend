@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TITFood_Backend.Entities;
@@ -14,7 +15,8 @@ namespace TITFood_Backend.Data
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<Dish> Dishes { get; set; }
-        public DbSet<Order> Orders { get; set; }
+        // public ISet<Order> Orders { get; set; }
+        public required DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Cart> Carts { get; set; }

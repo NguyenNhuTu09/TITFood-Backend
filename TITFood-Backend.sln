@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TITFood-Backend", "TITFood-Backend.csproj", "{C59B4AED-FC75-D7B7-FC15-B44F3B6D73BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C59B4AED-FC75-D7B7-FC15-B44F3B6D73BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C59B4AED-FC75-D7B7-FC15-B44F3B6D73BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C59B4AED-FC75-D7B7-FC15-B44F3B6D73BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C59B4AED-FC75-D7B7-FC15-B44F3B6D73BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69D31C2D-B7A2-419B-AA89-D24EB7EE0F3A}
+	EndGlobalSection
+EndGlobal

@@ -83,7 +83,7 @@ namespace TITFood_Backend.Services
                 var menu = await _context.Menus.FindAsync(dish.MenuId);
                 if (menu == null || menu.RestaurantId != createOrderDto.RestaurantId)
                 {
-                     throw new ArgumentException($"Món ăn '{dish.Name}' (ID: {dish.DishId}) không thuộc nhà hàng đã chọn (ID: {createOrderDto.RestaurantId}).");
+                     throw new ArgumentException($"Món ăn '{dish.Name}' (ID: {dish.Id}) không thuộc nhà hàng đã chọn (ID: {createOrderDto.RestaurantId}).");
                 }
 
                 var orderItem = new OrderItem

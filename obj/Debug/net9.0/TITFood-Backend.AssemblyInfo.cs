@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TITFood-Backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72bbdd1e344dea911fd340c0891153394551d522")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+88fa12863df9d546c9b1a689d0b0db6513a100bd")]
 [assembly: System.Reflection.AssemblyProductAttribute("TITFood-Backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TITFood-Backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -29,7 +29,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
+var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 if (jwtSettings == null || string.IsNullOrEmpty(jwtSettings.Key)) {
     throw new InvalidOperationException("JWT Key is not configured in appsettings.json. Please provide a strong secret key.");
 }

@@ -17,6 +17,7 @@ namespace TITFood_Backend.Interfaces
         Task<MenuDto?> CreateMenuAsync(CreateMenuDto createMenuDto);
         Task<bool> UpdateMenuAsync(int menuId, UpdateMenuDto updateMenuDto);
         Task<bool> DeleteMenuAsync(int menuId);
+        
 
         Task<IEnumerable<DishDto>> GetDishesByMenuAsync(int menuId);
         Task<DishDto?> GetDishByIdAsync(int dishId);
