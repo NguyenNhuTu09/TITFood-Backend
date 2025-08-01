@@ -9,12 +9,14 @@ using TITFood_Backend.Entities;
 using TITFood_Backend.Helpers;
 using TITFood_Backend.Interfaces;
 using TITFood_Backend.Services;
+using Pomelo.EntityFrameworkCore.MySql; 
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    options.UseMySql(configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection"))));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
